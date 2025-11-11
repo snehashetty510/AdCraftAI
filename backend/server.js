@@ -22,6 +22,7 @@ const User = require('./models/User');
 const Campaign = require('./models/Campaign');
 const authRoutes = require('./routes/auth');
 const campaignRoutes = require('./routes/campaigns');
+const companyRoutes = require('./routes/companies');
 
 const app = express();
 
@@ -40,6 +41,7 @@ Campaign.belongsTo(Company, { foreignKey: 'companyId' });
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/campaigns', campaignRoutes);
+app.use('/api/companies', companyRoutes);
 
 // Simple root status route
 app.get('/', (req, res) => {

@@ -146,6 +146,26 @@ const Auth = ({ onClose }) => {
               )}
             </div>
 
+            {/* Company name field (only for signup) */}
+            {!isLogin && (
+              <div>
+                <label className="block text-teal-400 font-semibold mb-2 text-sm uppercase tracking-wide flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  Company Name
+                </label>
+                <input
+                  type="text"
+                  name="companyName"
+                  value={formData.companyName}
+                  onChange={handleChange}
+                  placeholder="Enter your company name"
+                  required={!isLogin}
+                  className="w-full px-4 py-3 bg-slate-900/80 border-2 border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-white placeholder-slate-500 transition-all hover:border-teal-500/50"
+                />
+                <p className="text-xs text-slate-400 mt-2">We'll create the company if it doesn't exist.</p>
+              </div>
+            )}
+
             {/* Submit button */}
             <button
               type="submit"
@@ -173,23 +193,6 @@ const Auth = ({ onClose }) => {
               </button>
             </p>
           </div>
-          {/* Company name field (only for signup) */}
-          {!isLogin && (
-            <div className="mt-5">
-              <label className="block text-teal-400 font-semibold mb-2 text-sm uppercase tracking-wide flex items-center gap-2">
-                Company Name
-              </label>
-              <input
-                type="text"
-                name="companyName"
-                value={formData.companyName}
-                onChange={handleChange}
-                placeholder="Enter your company name (or existing)"
-                className="w-full px-4 py-3 bg-slate-900/80 border-2 border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-white placeholder-slate-500 transition-all hover:border-teal-500/50"
-              />
-              <p className="text-xs text-slate-400 mt-2">We'll create the company if it doesn't exist.</p>
-            </div>
-          )}
         </div>
       </div>
     </div>

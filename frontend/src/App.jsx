@@ -1,7 +1,8 @@
 ﻿import React, { useState } from 'react';
-import { Sparkles, Image, MessageSquare, BarChart3, Wand2, FileText, TrendingUp, DollarSign, Instagram, Linkedin, Facebook, Twitter, LogOut, User } from 'lucide-react';
+import { Sparkles, Image, MessageSquare, BarChart3, Wand2, FileText, TrendingUp, DollarSign, Instagram, Linkedin, Facebook, Twitter, LogOut, User, Shield } from 'lucide-react';
 import { useAuth } from './context/AuthContext';
 import Auth from './components/Auth';
+import CompanyAdmin from './components/CompanyAdmin';
 
 export default function AdCraftAI() {
   const { user, logout, isAuthenticated } = useAuth();
@@ -143,6 +144,19 @@ export default function AdCraftAI() {
           >
             Generated Content
           </button>
+          {isAuthenticated && (user?.role === 'company_admin' || user?.role === 'admin') && (
+            <button
+              onClick={() => setActiveTab('admin')}
+              className={`flex-1 py-5 px-10 rounded-xl font-semibold text-lg transition-all ${
+                activeTab === 'admin'
+                  ? 'bg-teal-500 text-white shadow-lg'
+                  : 'text-slate-300 hover:bg-slate-700/70 hover:text-white'
+              } flex items-center justify-center gap-2`}
+            >
+              <Shield className="w-5 h-5" />
+              Admin Panel
+            </button>
+          )}
         </div>
       </div>
 
@@ -443,6 +457,11 @@ export default function AdCraftAI() {
             </p>
           </div>
           </div>
+        )}
+
+        {/* Admin Panel Section */}
+        {activeTab === 'admin' && isAuthenticated && (user?.role === 'company_admin' || user?.role === 'admin') && (
+          <CompanyAdmin />
         )}
       </div>
 

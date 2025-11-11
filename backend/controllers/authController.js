@@ -125,6 +125,11 @@ exports.login = async (req, res) => {
       });
     }
 
+    // Enforce company membership
+    if (!user.companyId) {
+      return res.status(403).json({ success: false, message: 'User is not assigned to a company. Contact an administrator.' });
+    }
+
     // Update last login
     user.lastLogin = new Date();
     await user.save();
