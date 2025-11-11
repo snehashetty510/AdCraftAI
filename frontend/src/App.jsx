@@ -1,7 +1,11 @@
 ﻿import React, { useState } from 'react';
-import { Sparkles, Image, MessageSquare, BarChart3, Wand2, FileText, TrendingUp, DollarSign, Instagram, Linkedin, Facebook, Twitter } from 'lucide-react';
+import { Sparkles, Image, MessageSquare, BarChart3, Wand2, FileText, TrendingUp, DollarSign, Instagram, Linkedin, Facebook, Twitter, LogOut, User } from 'lucide-react';
+import { useAuth } from './context/AuthContext';
+import Auth from './components/Auth';
 
 export default function AdCraftAI() {
+  const { user, logout, isAuthenticated } = useAuth();
+  const [showAuth, setShowAuth] = useState(false);
   const [formData, setFormData] = useState({
     productName: '',
     category: '',
@@ -87,6 +91,32 @@ export default function AdCraftAI() {
         <p className="text-teal-200/70 text-sm mt-3 uppercase tracking-widest">
           AI-Powered Marketing in Seconds
         </p>
+
+        {/* Auth buttons */}
+        <div className="mt-6 flex items-center justify-center gap-4">
+          {isAuthenticated ? (
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 bg-slate-800/60 px-4 py-2 rounded-lg border border-teal-500/30">
+                <User className="w-5 h-5 text-teal-400" />
+                <span className="text-teal-200 font-medium">{user?.name}</span>
+              </div>
+              <button
+                onClick={logout}
+                className="flex items-center gap-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 text-red-200 px-4 py-2 rounded-lg transition-all font-semibold"
+              >
+                <LogOut className="w-5 h-5" />
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowAuth(true)}
+              className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded-lg font-semibold transition-all shadow-lg hover:shadow-teal-500/50 border-2 border-teal-400"
+            >
+              Login / Sign Up
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Tab Navigation */}
@@ -415,6 +445,9 @@ export default function AdCraftAI() {
           </div>
         )}
       </div>
+
+      {/* Auth Modal */}
+      {showAuth && <Auth onClose={() => setShowAuth(false)} />}
     </div>
   );
 }
