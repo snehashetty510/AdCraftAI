@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api/auth';
+const BASE_URL = 'http://localhost:5000';
 
 // Create axios instance with default config
 const api = axios.create({
@@ -10,8 +11,30 @@ const api = axios.create({
   },
 });
 
-// Add token to requests if it exists
+// Create general API instance for non-auth endpoints
+export const apiClient = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Add token to requests if it exists (for auth endpoints)
 api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add token to requests if it exists (for general API endpoints)
+apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {

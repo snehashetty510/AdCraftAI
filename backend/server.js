@@ -20,9 +20,13 @@ global.sequelize = sequelize;
 const Company = require('./models/Company');
 const User = require('./models/User');
 const Campaign = require('./models/Campaign');
+const Template = require('./models/Template');
+const BrandProfile = require('./models/BrandProfile');
 const authRoutes = require('./routes/auth');
 const campaignRoutes = require('./routes/campaigns');
 const companyRoutes = require('./routes/companies');
+const templateRoutes = require('./routes/templates');
+const brandRoutes = require('./routes/brand');
 
 const app = express();
 
@@ -31,6 +35,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Log all requests
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
+});
+
 // Define associations (after models loaded)
 Company.hasMany(User, { foreignKey: 'companyId' });
 User.belongsTo(Company, { foreignKey: 'companyId' });
@@ -38,10 +48,16 @@ User.belongsTo(Company, { foreignKey: 'companyId' });
 Company.hasMany(Campaign, { foreignKey: 'companyId' });
 Campaign.belongsTo(Company, { foreignKey: 'companyId' });
 
+Company.hasOne(BrandProfile, { foreignKey: 'companyId' });
+BrandProfile.belongsTo(Company, { foreignKey: 'companyId' });
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/campaigns', campaignRoutes);
 app.use('/api/companies', companyRoutes);
+app.use('/api/templates', templateRoutes);
+app.use('/api/brand', brandRoutes);
+app.use('/api/images', require('./routes/images'));
 
 // Simple root status route
 app.get('/', (req, res) => {

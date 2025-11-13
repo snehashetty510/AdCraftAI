@@ -85,12 +85,6 @@ const User = sequelize.define('User', {
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(user.password, salt);
       }
-    },
-    // Enforce company association on create going forward
-    beforeValidate: async (user) => {
-      if (user.isNewRecord && (user.companyId === null || user.companyId === undefined)) {
-        throw new Error('companyId is required for new users');
-      }
     }
   }
 });

@@ -48,6 +48,9 @@ exports.signup = async (req, res) => {
       });
     }
 
+    console.log('Creating new user:', { email: email.toLowerCase(), name, companyId: company?.id });
+    console.log('Password being saved (length):', password.length);
+
     // Create new user
     const user = await User.create({
       name,
@@ -55,6 +58,9 @@ exports.signup = async (req, res) => {
       password,
       companyId: company ? company.id : null
     });
+
+    console.log('User created successfully:', { id: user.id, email: user.email });
+    console.log('Password hash saved:', user.password.substring(0, 20) + '...');
 
     // Generate token
     const token = generateToken(user.id);
@@ -99,6 +105,8 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    console.log('Login attempt:', { email, passwordLength: password?.length });
+
     // Validate input
     if (!email || !password) {
       return res.status(400).json({
@@ -109,6 +117,11 @@ exports.login = async (req, res) => {
 
     // Check if user exists
     const user = await User.findOne({ where: { email: email.toLowerCase() } });
+    console.log('User found:', user ? `Yes (ID: ${user.id})` : 'No');
+    console.log('Looking for email:', email.toLowerCase());
+    console.log('User email in DB:', user?.email);
+    console.log('Stored password hash:', user?.password);
+    
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -117,7 +130,11 @@ exports.login = async (req, res) => {
     }
 
     // Check if password matches
+    console.log('Comparing passwords...');
+    console.log('Candidate password length:', password.length);
     const isPasswordCorrect = await user.comparePassword(password);
+    console.log('Password match:', isPasswordCorrect);
+    
     if (!isPasswordCorrect) {
       return res.status(401).json({
         success: false,
@@ -125,9 +142,10 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Enforce company membership
-    if (!user.companyId) {
-      return res.status(403).json({ success: false, message: 'User is not assigned to a company. Contact an administrator.' });
+    // Get company info if user has one
+    let company = null;
+    if (user.companyId) {
+      company = await Company.findByPk(user.companyId);
     }
 
     // Update last login
@@ -138,11 +156,6 @@ exports.login = async (req, res) => {
     const token = generateToken(user.id);
 
     // Send response
-    let company = null;
-    if (user.companyId) {
-      company = await Company.findByPk(user.companyId);
-    }
-
     res.status(200).json({
       success: true,
       message: 'Login successful',
