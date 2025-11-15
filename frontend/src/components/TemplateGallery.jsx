@@ -126,8 +126,8 @@ export default function TemplateGallery({ onSelectTemplate, selectedTemplateId, 
             >
               {/* Selection Indicator */}
               {selectedTemplateId === template.id && (
-                <div className="absolute top-4 right-4 bg-blue-600 text-white rounded-full p-1">
-                  <Check className="w-4 h-4" />
+                <div className="absolute top-4 right-4 bg-blue-600 text-white rounded-full p-1.5 z-10 shadow-lg">
+                  <Check className="w-5 h-5" />
                 </div>
               )}
 
@@ -200,8 +200,10 @@ export default function TemplateGallery({ onSelectTemplate, selectedTemplateId, 
 
               {/* Template Info */}
               <div className="space-y-2">
-                <h3 className="font-semibold text-lg">{template.name}</h3>
-                <p className="text-sm text-gray-600">{template.description}</p>
+                <h3 className={`font-semibold text-lg ${
+                  selectedTemplateId === template.id ? 'text-blue-700' : 'text-white'
+                }`}>{template.name}</h3>
+                <p className="text-sm text-gray-300">{template.description}</p>
                 
                 {/* User Data Preview */}
                 {userData?.productName && (
